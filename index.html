@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clima Tatio</title>
+
+<style>
+:root {
+    --bg: #08111f;
+    --card: rgba(20, 35, 55, 0.72);
+    --text: #ffffff;
+    --muted: #aab8ca;
+    --line: rgba(255,255,255,.12);
+    --accent: #72b9ff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at 20% 0%, rgba(80,160,255,.28), transparent 35%),
+        radial-gradient(circle at 90% 80%, rgba(50,210,180,.14), transparent 30%),
+        linear-gradient(145deg, #07101c, #10243b);
+}
+
+/* Fundo climático */
+.background {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(
+            rgba(5,15,28,.45),
+            rgba(5,15,28,.72)
+        ),
+        url("https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=2000&q=85");
+    background-size: cover;
+    background-position: center;
+    opacity: .65;
+}
+
+/* APP */
+
+.app {
+    width: min(1150px, 94%);
+    margin: auto;
+    padding: 22px 0 35px;
+}
+
+/* TOPO */
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    font-size: 34px;
+}
+
+.logo-area h1 {
+    margin: 0;
+    font-size: 23px;
+}
+
+.logo-area span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.buttons {
+    display: flex;
+    gap: 8px;
+}
+
+button {
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    backdrop-filter: blur(15px);
+}
+
+/* CARDS */
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 22px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 18px 50px rgba(0,0,0,.25);
+}
+
+/* PRINCIPAL */
+
+.hero {
+    display: grid;
+    grid-template-columns: 1.35fr .65fr;
+    gap: 15px;
+}
+
+.main-weather {
+    min-height: 310px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.location {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.updated {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.weather-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+
+.temperature {
+    font-size: 85px;
+    font-weight: 700;
+    letter-spacing: -5px;
+}
+
+.condition {
+    font-size: 21px;
+    font-weight: 600;
+}
+
+.feels {
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.weather-icon {
+    font-size: 80px;
+}
+
+/* ESTATÍSTICAS */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.stat {
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 17px;
+}
+
+.stat span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.stat strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 21px;
+}
+
+/* SEÇÕES */
+
+.section {
+    margin-top: 18px;
+}
+
+.section-title {
+    font-size: 18px;
+    margin: 0 0 10px 4px;
+}
+
+/* PREVISÃO */
+
+.forecast {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.day {
+    text-align: center;
+    padding: 15px 8px;
+    background: rgba(255,255,255,.04);
+    border-radius: 17px;
+}
+
+.day-name {
+    font-weight: 700;
+}
+
+.day-icon {
+    font-size: 34px;
+    margin: 12px 0;
+}
+
+.day-temperature {
+    font-weight: 700;
+}
+
+.day-temperature span {
+    color: var(--muted);
+    font-weight: 400;
+}
+
+/* DUAS COLUNAS */
+
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* VENTO */
+
+.wind {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.compass {
+    width: 125px;
+    height: 125px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    position: relative;
+    background: rgba(255,255,255,.04);
+}
+
+.compass::before {
+    content: "";
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    background: var(--line);
+}
+
+.compass::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: var(--line);
+}
+
+.arrow {
+    font-size: 55px;
+    position: relative;
+    z-index: 2;
+}
+
+.wind-speed {
+    font-size: 35px;
+    font-weight: 700;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* MAPA */
+
+.map {
+    height: 360px;
+    border-radius: 18px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(60,130,190,.45),
+            rgba(30,80,120,.65)
+        );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255,255,255,.7);
+    font-size: 18px;
+}
+
+/* ALERTAS */
+
+.alert {
+    padding: 15px;
+    border-radius: 15px;
+    background: rgba(255,180,70,.10);
+    border-left: 4px solid #ffb84d;
+}
+
+.alert strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.alert span {
+    color: var(--muted);
+}
+
+/* BUSCA */
+
+.search {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.search input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 13px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.06);
+    color: white;
+    outline: none;
+}
+
+/* RODAPÉ */
+
+footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 28px 0 5px;
+}
+
+/* CELULAR */
+
+@media (max-width: 800px) {
+
+    .hero,
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .forecast {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .temperature {
+        font-size: 68px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .app {
+        width: 92%;
+    }
+
+    .card {
+        padding: 17px;
+        border-radius: 20px;
+    }
+
+    .forecast {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .weather-icon {
+        font-size: 60px;
+    }
+
+    .topbar {
+        align-items: flex-start;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<main class="app">
+
+    <!-- TOPO -->
+
+    <header class="topbar">
+
+        <div class="logo-area">
+            <div class="logo">🌦️</div>
+
+            <div>
+                <h1>Clima Tatio</h1>
+                <span>Seu clima, de um jeito simples.</span>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button>📍 Localizar</button>
+            <button>☾ Tema</button>
+        </div>
+
+    </header>
+
+
+    <!-- CLIMA PRINCIPAL -->
+
+    <section class="hero">
+
+        <div class="card main-weather">
+
+            <div>
+                <div class="location">
+                    Duque de Caxias, RJ
+                </div>
+
+                <div class="updated">
+                    Atualizado agora
+                </div>
+            </div>
+
+            <div class="weather-bottom">
+
+                <div>
+
+                    <div class="temperature">
+                        23°
+                    </div>
+
+                    <div class="condition">
+                        Parcialmente nublado
+                    </div>
+
+                    <div class="feels">
+                        Sensação de 22°
+                    </div>
+
+                </div>
+
+                <div class="weather-icon">
+                    ⛅
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ESTATÍSTICAS -->
+
+        <div class="card stats">
+
+            <div class="stat">
+                <span>💨 Vento</span>
+                <strong>14 km/h</strong>
+            </div>
+
+            <div class="stat">
+                <span>🧭 Direção</span>
+                <strong>NO</strong>
+            </div>
+
+            <div class="stat">
+                <span>💧 Umidade</span>
+                <strong>78%</strong>
+            </div>
+
+            <div class="stat">
+                <span>🌧️ Chuva</span>
+                <strong>0,0 mm</strong>
+            </div>
+
+            <div class="stat">
+                <span>🌅 Nascer</span>
+                <strong>05:30</strong>
+            </div>
+
+            <div class="stat">
+                <span>🌇 Pôr do sol</span>
+                <strong>17:55</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PREVISÃO -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            Previsão para 7 dias
+        </h2>
+
+        <div class="card forecast">
+
+            <div class="day">
+                <div class="day-name">Hoje</div>
+                <div class="day-icon">⛅</div>
+                <div class="day-temperature">25° <span>20°</span></div>
+            </div>
+
+            <div class="day">
+                <div class="day-name">Seg</div>
+                <div class="day-icon">🌧️</div>
+                <div class="day-temperature">24° <span>19°</span></div>
+            </div>
+
+            <div class="day">
+                <div class="day-name">Ter</div>
+                <div class="day-icon">☁️</div>
+                <div class="day-temperature">23° <span>18°</span></div>
+            </div>
+
+            <div class="day">
+                <div class="day-name">Qua</div>
+                <div class="day-icon">🌦️</div>
+                <div class="day-temperature">25° <span>19°</span></div>
+            </div>
+
+            <div class="day">
+                <div class="day-name">Qui</div>
+                <div class="day-icon">☀️</div>
+                <div class="day-temperature">27° <span>20°</span></div>
+            </div>
+
+            <div class="day">
+                <div class="day-name">Sex</div>
+                <div class="day-icon">⛅</div>
+                <div class="day-temperature">26° <span>20°</span></div>
+            </div>
+
+            <div class="day">
+                <div class="day-name">Sáb</div>
+                <div class="day-icon">🌧️</div>
+                <div class="day-temperature">24° <span>19°</span></div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- VENTO + BUSCA -->
+
+    <section class="section two-columns">
+
+        <div class="card">
+
+            <h2 class="section-title">
+                Vento agora
+            </h2>
+
+            <div class="wind">
+
+                <div class="compass">
+                    <div class="arrow">↑</div>
+                </div>
+
+                <div>
+                    <div class="wind-speed">
+                        14 km/h
+                    </div>
+
+                    <div class="muted">
+                        Direção: NO
+                    </div>
+
+                    <p class="muted">
+                        Velocidade e direção do vento em tempo real.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2 class="section-title">
+                Buscar outro local
+            </h2>
+
+            <div class="muted">
+                Consulte o clima de qualquer cidade.
+            </div>
+
+            <div class="search">
+
+                <input
+                    type="text"
+                    placeholder="Ex.: Rio de Janeiro"
+                >
+
+                <button>
+                    Buscar
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MAPA -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            🗺️ Mapa de vento
+        </h2>
+
+        <div class="card">
+
+            <div class="map">
+                Mapa meteorológico
+            </div>
+
+            <p class="muted">
+                Visualização das condições de vento.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ALERTAS -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            🚨 Alertas meteorológicos
+        </h2>
+
+        <div class="card">
+
+            <div class="alert">
+
+                <strong>
+                    ⚠️ Alertas oficiais
+                </strong>
+
+                <span>
+                    Nenhum alerta ativo encontrado para sua região.
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RODAPÉ -->
+
+    <footer>
+        Todos os direitos reservados a Nichollas G.
+    </footer>
+
+</main>
+
+</body>
+</html>
